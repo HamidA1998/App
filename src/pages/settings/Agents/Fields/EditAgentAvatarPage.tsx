@@ -30,6 +30,7 @@ import CONST from '@src/CONST';
 import type {TranslationPaths} from '@src/languages/types';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
+import type {Route} from '@src/ROUTES';
 import type SCREENS from '@src/SCREENS';
 import type {FileObject} from '@src/types/utils/Attachment';
 
@@ -44,12 +45,16 @@ type ImageData = {
 
 const EMPTY_IMAGE_DATA: ImageData = {uri: '', name: '', type: '', file: null};
 
-function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
+type EditAgentAvatarContentProps = {
+    accountID: number;
+    fallbackRoute?: Route;
+};
+
+function EditAgentAvatarContent({accountID, fallbackRoute}: EditAgentAvatarContentProps) {
     const {translate} = useLocalize();
     const styles = useThemeStyles();
     const theme = useTheme();
     const icons = useMemoizedLazyExpensifyIcons(['Upload']);
-    const accountID = route.params.accountID;
 
     const [personalDetails] = useOnyx(ONYXKEYS.PERSONAL_DETAILS_LIST, {selector: (list) => list?.[accountID]});
 
@@ -113,7 +118,7 @@ function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
 
         if (imageData.file) {
             updateAgentAvatar(accountID, {file: imageData.file, uri: imageData.uri}, personalDetails?.avatar);
-            Navigation.goBack(ROUTES.SETTINGS_AGENTS_EDIT.getRoute(accountID));
+            Navigation.goBack(fallbackRoute);
             return;
         }
 
@@ -121,20 +126,20 @@ function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
             const customExpensifyAvatarID = botAvatarIDs.get(selectedBotAvatar);
             if (customExpensifyAvatarID) {
                 updateAgentAvatar(accountID, {customExpensifyAvatarID}, personalDetails?.avatar);
-                Navigation.goBack(ROUTES.SETTINGS_AGENTS_EDIT.getRoute(accountID));
+                Navigation.goBack(fallbackRoute);
             }
         }
     };
 
     return (
         <ScreenWrapper
-            testID={EditAgentAvatarPage.displayName}
+            testID={EditAgentAvatarContent.displayName}
             includeSafeAreaPaddingBottom
             offlineIndicatorStyle={styles.mtAuto}
         >
             <HeaderWithBackButton
                 title={translate('editAgentAvatarPage.title')}
-                onBackButtonPress={() => Navigation.goBack(ROUTES.SETTINGS_AGENTS_EDIT.getRoute(accountID))}
+                onBackButtonPress={() => Navigation.goBack(fallbackRoute)}
             />
             <ScrollView
                 style={styles.flex1}
@@ -235,6 +240,19 @@ function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
     );
 }
 
+EditAgentAvatarContent.displayName = 'EditAgentAvatarContent';
+
+function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
+    const {accountID} = route.params;
+    return (
+        <EditAgentAvatarContent
+            accountID={accountID}
+            fallbackRoute={ROUTES.SETTINGS_AGENTS_EDIT.getRoute(accountID)}
+        />
+    );
+}
+
 EditAgentAvatarPage.displayName = 'EditAgentAvatarPage';
 
+export {EditAgentAvatarContent};
 export default EditAgentAvatarPage;
