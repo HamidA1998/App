@@ -35,6 +35,7 @@ import getClickedTargetLocation from '@libs/getClickedTargetLocation';
 import Navigation from '@libs/Navigation/Navigation';
 import {sortAlphabetically} from '@libs/OptionsListUtils';
 import {getPersonalDetailByEmail} from '@libs/PersonalDetailsUtils';
+import {useIsAgentAccount} from '@libs/SessionUtils';
 import {hasDeviceManagementError} from '@libs/UserUtils';
 import type {AnchorPosition} from '@styles/index';
 import colors from '@styles/theme/colors';
@@ -86,6 +87,7 @@ function SecuritySettingsPage() {
     const [hasDeviceManagementErrorValue] = useOnyx(ONYXKEYS.LOGINS, {selector: hasDeviceManagementError});
     const currentUserPersonalDetails = useCurrentUserPersonalDetails();
     const privateSubscription = usePrivateSubscription();
+    const isAgentAccount = useIsAgentAccount();
     const isUserValidated = account?.validated;
     const delegateButtonRef = useRef<HTMLDivElement | null>(null);
 
@@ -435,22 +437,24 @@ function SecuritySettingsPage() {
                     />
                     <ScrollView contentContainerStyle={styles.pt3}>
                         <View style={[styles.flex1, shouldUseNarrowLayout ? styles.workspaceSectionMobile : styles.workspaceSection]}>
-                            <Section
-                                title={translate('securityPage.title')}
-                                subtitle={translate('securityPage.subtitle')}
-                                isCentralPane
-                                subtitleMuted
-                                illustrationContainerStyle={styles.cardSectionIllustrationContainer}
-                                illustrationBackgroundColor={colors.ice500}
-                                titleStyles={styles.accountSettingsSectionTitle}
-                                childrenStyles={styles.pt5}
-                                {...securitySettingsIllustration}
-                            >
-                                <MenuItemList
-                                    menuItems={securityMenuItems}
-                                    shouldUseSingleExecution
-                                />
-                            </Section>
+                            {!isAgentAccount && (
+                                <Section
+                                    title={translate('securityPage.title')}
+                                    subtitle={translate('securityPage.subtitle')}
+                                    isCentralPane
+                                    subtitleMuted
+                                    illustrationContainerStyle={styles.cardSectionIllustrationContainer}
+                                    illustrationBackgroundColor={colors.ice500}
+                                    titleStyles={styles.accountSettingsSectionTitle}
+                                    childrenStyles={styles.pt5}
+                                    {...securitySettingsIllustration}
+                                >
+                                    <MenuItemList
+                                        menuItems={securityMenuItems}
+                                        shouldUseSingleExecution
+                                    />
+                                </Section>
+                            )}
                             <View style={safeAreaPaddingBottomStyle}>
                                 <Section
                                     title={translate('delegate.copilotDelegatedAccess')}
