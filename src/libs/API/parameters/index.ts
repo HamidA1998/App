@@ -530,4 +530,5 @@ export type {default as CreateAgentParams} from './CreateAgentParams';
 export type {default as CreateDomainSecurityGroupParams} from './CreateDomainSecurityGroupParams';
 export type {default as UpdateAgentNameParams} from './UpdateAgentNameParams';
 export type {default as UpdateAgentPromptParams} from './UpdateAgentPromptParams';
+export type {default as UpdateAgentAvatarParams} from './UpdateAgentAvatarParams';
 export type {default as DeleteAgentParams} from './DeleteAgentParams';

@@ -180,6 +180,7 @@ const SCREENS = {
             EDIT: 'Settings_Agents_Edit',
             EDIT_NAME: 'Settings_Agents_Edit_Name',
             EDIT_PROMPT: 'Settings_Agents_Edit_Prompt',
+            EDIT_AVATAR: 'Settings_Agents_Edit_Avatar',
         },
 
         RULES: {

@@ -400,6 +400,12 @@ const config: LinkingOptions<RootNavigatorParamList>['config'] = {
                                 accountID: Number,
                             },
                         },
+                        [SCREENS.SETTINGS.AGENTS.EDIT_AVATAR]: {
+                            path: ROUTES.SETTINGS_AGENTS_EDIT_AVATAR.route,
+                            parse: {
+                                accountID: Number,
+                            },
+                        },
                         [SCREENS.SETTINGS.RULES.ADD]: {
                             path: ROUTES.SETTINGS_RULES_ADD.route,
                             exact: true,

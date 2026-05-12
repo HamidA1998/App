@@ -481,6 +481,7 @@ const SettingsModalStackNavigator = createModalStackNavigator<SettingsNavigatorP
     [SCREENS.SETTINGS.AGENTS.EDIT]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/EditAgentPage').default,
     [SCREENS.SETTINGS.AGENTS.EDIT_NAME]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/EditNamePage').default,
     [SCREENS.SETTINGS.AGENTS.EDIT_PROMPT]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/EditPromptPage').default,
+    [SCREENS.SETTINGS.AGENTS.EDIT_AVATAR]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/EditAgentAvatarPage').default,
     [SCREENS.SETTINGS.RULES.ADD]: () => require<ReactComponentModule>('../../../../pages/settings/Rules/AddRulePage').default,
     [SCREENS.SETTINGS.RULES.ADD_MERCHANT]: () => require<ReactComponentModule>('../../../../pages/settings/Rules/Fields/AddMerchantPage').default,
     [SCREENS.SETTINGS.RULES.ADD_RENAME_MERCHANT]: () => require<ReactComponentModule>('../../../../pages/settings/Rules/Fields/AddRenameMerchantPage').default,

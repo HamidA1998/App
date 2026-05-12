@@ -2631,6 +2631,7 @@ ${amount} para ${merchant} - ${date}`,
             genericUpdate: 'Hubo un problema al actualizar este agente',
             updateName: 'Hubo un problema al actualizar el nombre de este agente',
             updatePrompt: 'Hubo un problema al actualizar las instrucciones de este agente',
+            updateAvatar: 'Hubo un problema al actualizar el avatar de este agente',
         },
     },
     addAgentPage: {
@@ -2650,6 +2651,9 @@ ${amount} para ${merchant} - ${date}`,
         deleteAgent: 'Eliminar agente',
         deleteAgentTitle: '¿Eliminar agente?',
         deleteAgentMessage: '¿Estás seguro de que quieres eliminar este agente? Esta acción no se puede deshacer.',
+    },
+    editAgentAvatarPage: {
+        title: 'Editar avatar',
     },
     editAgentNamePage: {
         title: 'Nombre del agente',

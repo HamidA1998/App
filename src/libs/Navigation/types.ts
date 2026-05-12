@@ -253,6 +253,9 @@ type SettingsNavigatorParamList = {
     [SCREENS.SETTINGS.AGENTS.EDIT_PROMPT]: {
         accountID: number;
     };
+    [SCREENS.SETTINGS.AGENTS.EDIT_AVATAR]: {
+        accountID: number;
+    };
     [SCREENS.SETTINGS.RULES.ADD]: undefined;
     [SCREENS.SETTINGS.RULES.ADD_MERCHANT]: undefined;
     [SCREENS.SETTINGS.RULES.ADD_RENAME_MERCHANT]: undefined;

@@ -595,6 +595,7 @@ const WRITE_COMMANDS = {
     CREATE_DOMAIN_SECURITY_GROUP: 'CreateDomainSecurityGroup',
     UPDATE_AGENT_NAME: 'UpdateAgentName',
     UPDATE_AGENT_PROMPT: 'UpdateAgentPrompt',
+    UPDATE_AGENT_AVATAR: 'UpdateAgentAvatar',
     DELETE_AGENT: 'DeleteAgent',
 } as const;
 
@@ -1208,6 +1209,7 @@ type WriteCommandParameters = {
     [WRITE_COMMANDS.CREATE_AGENT]: Parameters.CreateAgentParams;
     [WRITE_COMMANDS.UPDATE_AGENT_NAME]: Parameters.UpdateAgentNameParams;
     [WRITE_COMMANDS.UPDATE_AGENT_PROMPT]: Parameters.UpdateAgentPromptParams;
+    [WRITE_COMMANDS.UPDATE_AGENT_AVATAR]: Parameters.UpdateAgentAvatarParams;
     [WRITE_COMMANDS.DELETE_AGENT]: Parameters.DeleteAgentParams;
 };
 

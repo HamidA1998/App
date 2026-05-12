@@ -1073,6 +1073,10 @@ const ROUTES = {
         route: 'settings/agents/:accountID/edit/prompt',
         getRoute: (accountID: number) => `settings/agents/${accountID}/edit/prompt` as const,
     },
+    SETTINGS_AGENTS_EDIT_AVATAR: {
+        route: 'settings/agents/:accountID/edit/avatar',
+        getRoute: (accountID: number) => `settings/agents/${accountID}/edit/avatar` as const,
+    },
     SETTINGS_RULES: 'settings/rules',
     SETTINGS_RULES_ADD: {
         route: 'settings/rules/new/:field?/:index?',
