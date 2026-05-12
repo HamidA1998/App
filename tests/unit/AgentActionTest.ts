@@ -2,7 +2,7 @@ import Onyx from 'react-native-onyx';
 import {write} from '@libs/API';
 import {WRITE_COMMANDS} from '@libs/API/types';
 import Navigation from '@libs/Navigation/Navigation';
-import {clearAgentUpdateError, createAgent, deleteAgent, updateAgentName, updateAgentPrompt} from '@userActions/Agent';
+import {clearAgentAvatarUpdateError, clearAgentUpdateError, createAgent, deleteAgent, updateAgentAvatar, updateAgentName, updateAgentPrompt} from '@userActions/Agent';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import type {AnyOnyxUpdate} from '@src/types/onyx/Request';
@@ -346,5 +346,125 @@ describe('clearAgentUpdateError', () => {
         clearAgentUpdateError(TEST_ACCOUNT_ID);
 
         expect(mergeSpy).toHaveBeenCalledWith(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`, {errors: null, nameErrors: null, promptErrors: null});
+    });
+});
+
+describe('updateAgentAvatar (file upload)', () => {
+    const mockFile = {uri: 'file://photo.jpg', name: 'photo.jpg'} as unknown as File;
+    const currentAvatar = 'https://cdn.example.com/old.jpg';
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('calls write with UPDATE_AGENT_AVATAR command and file param', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {file: mockFile, uri: 'file://photo.jpg'}, currentAvatar);
+
+        expect(mockWrite).toHaveBeenCalledWith(WRITE_COMMANDS.UPDATE_AGENT_AVATAR, {agentAccountID: TEST_ACCOUNT_ID, file: mockFile}, expect.any(Object));
+    });
+
+    it('optimistic data sets avatar URI, pendingFields UPDATE, and clears errorFields', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {file: mockFile, uri: 'file://photo.jpg'}, currentAvatar);
+
+        const {optimisticData} = getWriteOptions();
+        const personalDetailUpdate = optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
+        const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
+
+        expect(value.avatar).toBe('file://photo.jpg');
+        expect(value.avatarThumbnail).toBe('file://photo.jpg');
+        expect((value.pendingFields as Record<string, unknown>).avatar).toBe(CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE);
+        expect((value.errorFields as Record<string, unknown>).avatar).toBeNull();
+    });
+
+    it('optimistic data clears errors and avatarErrors on the prompt key', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {file: mockFile, uri: 'file://photo.jpg'}, currentAvatar);
+
+        const {optimisticData} = getWriteOptions();
+        const promptUpdate = optimisticData.find((u) => u.key === `${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`);
+
+        expect(promptUpdate?.value).toMatchObject({pendingAction: CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE, errors: null, avatarErrors: null});
+    });
+
+    it('success data clears pendingFields and errorFields', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {file: mockFile, uri: 'file://photo.jpg'}, currentAvatar);
+
+        const {successData} = getWriteOptions();
+        const personalDetailUpdate = successData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
+        const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
+
+        expect((value.pendingFields as Record<string, unknown>).avatar).toBeNull();
+        expect((value.errorFields as Record<string, unknown>).avatar).toBeNull();
+    });
+
+    it('failure data reverts avatar to currentAvatar and sets avatarErrors', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {file: mockFile, uri: 'file://photo.jpg'}, currentAvatar);
+
+        const {failureData} = getWriteOptions();
+        const personalDetailUpdate = failureData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
+        const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
+        const promptUpdate = failureData.find((u) => u.key === `${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`);
+
+        expect(value.avatar).toBe(currentAvatar);
+        expect(value.avatarThumbnail).toBe(currentAvatar);
+        expect((promptUpdate?.value as Record<string, unknown>).avatarErrors).toBeTruthy();
+        expect((promptUpdate?.value as Record<string, unknown>).pendingAction).toBeNull();
+    });
+});
+
+describe('updateAgentAvatar (bot avatar)', () => {
+    const BOT_AVATAR_ID = 'bot_avatar_1';
+    const currentAvatar = 'https://cdn.example.com/old.jpg';
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('calls write with UPDATE_AGENT_AVATAR command and customExpensifyAvatarID param', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+
+        expect(mockWrite).toHaveBeenCalledWith(WRITE_COMMANDS.UPDATE_AGENT_AVATAR, {agentAccountID: TEST_ACCOUNT_ID, customExpensifyAvatarID: BOT_AVATAR_ID}, expect.any(Object));
+    });
+
+    it('optimistic data does not set avatar URI for bot avatar', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+
+        const {optimisticData} = getWriteOptions();
+        const personalDetailUpdate = optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
+        const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
+
+        expect(value.avatar).toBeUndefined();
+        expect(value.avatarThumbnail).toBeUndefined();
+        expect((value.pendingFields as Record<string, unknown>).avatar).toBe(CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE);
+    });
+
+    it('failure data reverts avatar and sets avatarErrors', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+
+        const {failureData} = getWriteOptions();
+        const personalDetailUpdate = failureData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
+        const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
+        const promptUpdate = failureData.find((u) => u.key === `${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`);
+
+        expect(value.avatar).toBe(currentAvatar);
+        expect((promptUpdate?.value as Record<string, unknown>).avatarErrors).toBeTruthy();
+    });
+});
+
+describe('clearAgentAvatarUpdateError', () => {
+    let mergeSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mergeSpy = jest.spyOn(Onyx, 'merge').mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+        mergeSpy.mockRestore();
+    });
+
+    it('calls Onyx.merge on the correct prompt key with avatarErrors null', () => {
+        clearAgentAvatarUpdateError(TEST_ACCOUNT_ID);
+
+        expect(mergeSpy).toHaveBeenCalledWith(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`, {avatarErrors: null});
     });
 });
