@@ -83,7 +83,7 @@ function clearAgentError(optimisticAccountID: number) {
 }
 
 function clearAgentUpdateError(accountID: number) {
-    Onyx.merge(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${accountID}`, {errors: null, nameErrors: null, promptErrors: null});
+    Onyx.merge(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${accountID}`, {errors: null, nameErrors: null, promptErrors: null, avatarErrors: null});
 }
 
 function clearAgentNameUpdateError(accountID: number) {

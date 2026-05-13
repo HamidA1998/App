@@ -67,7 +67,10 @@ function AgentsPage() {
                 login: details.login ?? '',
                 pendingAction: agentPrompt?.pendingAction,
                 errors: agentPrompt?.errors,
-                hasUpdateErrors: hasNameErrors || hasPromptErrors,
+                hasUpdateErrors:
+                    !!(agentPrompt?.nameErrors && Object.keys(agentPrompt.nameErrors).length > 0) ||
+                    !!(agentPrompt?.promptErrors && Object.keys(agentPrompt.promptErrors).length > 0) ||
+                    !!(agentPrompt?.avatarErrors && Object.keys(agentPrompt.avatarErrors).length > 0),
             };
         })
         .filter(Boolean) as AgentItem[];
