@@ -17,6 +17,7 @@ import {getAvatarURL, isPresetAvatarID} from '@libs/Avatars/PresetAvatarCatalog'
 import type {CustomRNImageManipulatorResult} from '@libs/cropOrRotateImage/types';
 import Navigation from '@libs/Navigation/Navigation';
 import {useIsAgentAccount} from '@libs/SessionUtils';
+import type {OnSaveParams} from '@pages/settings/Agents/Fields/EditAgentAvatarPage';
 import {EditAgentAvatarContent} from '@pages/settings/Agents/Fields/EditAgentAvatarPage';
 import {updateAvatar} from '@userActions/PersonalDetails';
 import type {TranslationPaths} from '@src/languages/types';
@@ -120,7 +121,31 @@ function ProfileAvatar() {
     };
 
     if (isAgentAccount) {
-        return <EditAgentAvatarContent accountID={currentUserPersonalDetails.accountID} />;
+        const handleAgentSave = (params: OnSaveParams) => {
+            if ('file' in params) {
+                updateAvatar(params.file, {
+                    avatar: currentUserPersonalDetails?.avatar,
+                    avatarThumbnail: currentUserPersonalDetails?.avatarThumbnail,
+                    accountID: currentUserPersonalDetails?.accountID,
+                });
+            } else {
+                updateAvatar(
+                    {uri: params.customExpensifyAvatarID, name: params.customExpensifyAvatarID, customExpensifyAvatarID: params.customExpensifyAvatarID},
+                    {
+                        avatar: currentUserPersonalDetails?.avatar,
+                        avatarThumbnail: currentUserPersonalDetails?.avatarThumbnail,
+                        accountID: currentUserPersonalDetails?.accountID,
+                    },
+                );
+            }
+            Navigation.dismissModal();
+        };
+        return (
+            <EditAgentAvatarContent
+                accountID={currentUserPersonalDetails.accountID}
+                onSave={handleAgentSave}
+            />
+        );
     }
 
     return (

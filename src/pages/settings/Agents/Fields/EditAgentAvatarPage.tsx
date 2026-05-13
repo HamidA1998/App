@@ -45,12 +45,15 @@ type ImageData = {
 
 const EMPTY_IMAGE_DATA: ImageData = {uri: '', name: '', type: '', file: null};
 
+type OnSaveParams = {file: File | CustomRNImageManipulatorResult; uri: string} | {customExpensifyAvatarID: string};
+
 type EditAgentAvatarContentProps = {
     accountID: number;
     fallbackRoute?: Route;
+    onSave?: (params: OnSaveParams) => void;
 };
 
-function EditAgentAvatarContent({accountID, fallbackRoute}: EditAgentAvatarContentProps) {
+function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAvatarContentProps) {
     const {translate} = useLocalize();
     const styles = useThemeStyles();
     const theme = useTheme();
@@ -117,14 +120,21 @@ function EditAgentAvatarContent({accountID, fallbackRoute}: EditAgentAvatarConte
         isSavingRef.current = true;
 
         if (imageData.file) {
+            if (onSave) {
+                onSave({file: imageData.file, uri: imageData.uri});
+                return;
+            }
             updateAgentAvatar(accountID, {file: imageData.file, uri: imageData.uri}, personalDetails?.avatar);
             Navigation.goBack(fallbackRoute);
-            return;
         }
 
         if (selectedBotAvatar) {
             const customExpensifyAvatarID = botAvatarIDs.get(selectedBotAvatar);
             if (customExpensifyAvatarID) {
+                if (onSave) {
+                    onSave({customExpensifyAvatarID});
+                    return;
+                }
                 updateAgentAvatar(accountID, {customExpensifyAvatarID}, personalDetails?.avatar);
                 Navigation.goBack(fallbackRoute);
             }
@@ -254,5 +264,6 @@ function EditAgentAvatarPage({route}: EditAgentAvatarPageProps) {
 
 EditAgentAvatarPage.displayName = 'EditAgentAvatarPage';
 
+export type {OnSaveParams};
 export {EditAgentAvatarContent};
 export default EditAgentAvatarPage;
