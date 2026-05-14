@@ -130,7 +130,7 @@ function ProfileAvatar() {
                 });
             } else {
                 updateAvatar(
-                    {uri: params.customExpensifyAvatarID, name: params.customExpensifyAvatarID, customExpensifyAvatarID: params.customExpensifyAvatarID},
+                    {uri: getAvatarURL(params.customExpensifyAvatarID), name: params.customExpensifyAvatarID, customExpensifyAvatarID: params.customExpensifyAvatarID},
                     {
                         avatar: currentUserPersonalDetails?.avatar,
                         avatarThumbnail: currentUserPersonalDetails?.avatarThumbnail,
