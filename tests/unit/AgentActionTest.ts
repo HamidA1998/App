@@ -345,7 +345,7 @@ describe('clearAgentUpdateError', () => {
     it('calls Onyx.merge on the correct prompt key with errors null', () => {
         clearAgentUpdateError(TEST_ACCOUNT_ID);
 
-        expect(mergeSpy).toHaveBeenCalledWith(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`, {errors: null, nameErrors: null, promptErrors: null});
+        expect(mergeSpy).toHaveBeenCalledWith(`${ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT}${TEST_ACCOUNT_ID}`, {avatarErrors: null, errors: null, nameErrors: null, promptErrors: null});
     });
 });
 

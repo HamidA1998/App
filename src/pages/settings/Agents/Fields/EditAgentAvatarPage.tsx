@@ -196,6 +196,7 @@ function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAva
                                     accessible
                                     accessibilityRole="button"
                                     accessibilityLabel={translate('avatarPage.selectAvatar')}
+                                    sentryLabel="EditAgentAvatar-BotAvatarSelector"
                                     onPress={() => {
                                         setSelectedBotAvatar(() => botAvatar);
                                         setImageData(EMPTY_IMAGE_DATA);
@@ -218,7 +219,7 @@ function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAva
                 {!!errorData.validationError && (
                     <DotIndicatorMessage
                         style={styles.mv5}
-                        messages={{0: translate(errorData.validationError, errorData.phraseParam as never)}}
+                        messages={{validationError: translate(errorData.validationError, errorData.phraseParam as never)}}
                         type="error"
                     />
                 )}
