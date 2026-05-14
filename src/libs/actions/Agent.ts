@@ -1,6 +1,7 @@
 import Onyx from 'react-native-onyx';
 import {read, write} from '@libs/API';
 import {READ_COMMANDS, WRITE_COMMANDS} from '@libs/API/types';
+import {getAvatarURL, isPresetAvatarID} from '@libs/Avatars/PresetAvatarCatalog';
 import type {CustomRNImageManipulatorResult} from '@libs/cropOrRotateImage/types';
 import {getMicroSecondOnyxErrorWithTranslationKey} from '@libs/ErrorUtils';
 import Navigation from '@libs/Navigation/Navigation';
@@ -14,8 +15,14 @@ function openAgentsPage() {
     read(READ_COMMANDS.OPEN_AGENTS_PAGE, null);
 }
 
-function createAgent(firstName: string | undefined, prompt: string, customExpensifyAvatarID?: string) {
+function createAgent(firstName: string | undefined, prompt: string, customExpensifyAvatarID?: string, optimisticAvatarURI?: string) {
     const optimisticAccountID = -Math.round(Math.random() * 1000000);
+
+    const avatarURI = customExpensifyAvatarID
+        ? isPresetAvatarID(customExpensifyAvatarID)
+            ? (getAvatarURL(customExpensifyAvatarID) ?? customExpensifyAvatarID)
+            : customExpensifyAvatarID
+        : optimisticAvatarURI;
 
     const optimisticData: AnyOnyxUpdate[] = [
         {
@@ -26,6 +33,7 @@ function createAgent(firstName: string | undefined, prompt: string, customExpens
                     accountID: optimisticAccountID,
                     displayName: firstName,
                     isOptimisticPersonalDetail: true,
+                    ...(avatarURI ? {avatar: avatarURI, avatarThumbnail: avatarURI} : {}),
                 },
             },
         },
@@ -60,6 +68,7 @@ function createAgent(firstName: string | undefined, prompt: string, customExpens
                     accountID: optimisticAccountID,
                     displayName: firstName,
                     isOptimisticPersonalDetail: true,
+                    ...(avatarURI ? {avatar: avatarURI, avatarThumbnail: avatarURI} : {}),
                 },
             },
         },

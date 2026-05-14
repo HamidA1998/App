@@ -86,7 +86,7 @@ function AddAgentPage() {
 
         if (pendingFile) {
             const existingAgentIDs = Object.keys(agentPrompts ?? {}).map((key) => parseInt(key.slice(ONYXKEYS.COLLECTION.SHARED_NVP_AGENT_PROMPT.length), 10));
-            createAgent(firstName, values[INPUT_IDS.PROMPT].trim(), undefined);
+            createAgent(firstName, values[INPUT_IDS.PROMPT].trim(), undefined, pendingFile.uri);
             scheduleAgentAvatarUploadAfterCreation(pendingFile.file, pendingFile.uri, existingAgentIDs);
         } else {
             const customExpensifyAvatarID = botAvatarIDs.get(avatarSource as BotAvatar);
