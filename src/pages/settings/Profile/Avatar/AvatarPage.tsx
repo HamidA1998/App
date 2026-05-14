@@ -129,8 +129,14 @@ function ProfileAvatar() {
                     accountID: currentUserPersonalDetails?.accountID,
                 });
             } else {
+                const {customExpensifyAvatarID} = params;
+                const uri = isPresetAvatarID(customExpensifyAvatarID) ? (getAvatarURL(customExpensifyAvatarID) ?? customExpensifyAvatarID) : customExpensifyAvatarID;
                 updateAvatar(
-                    {uri: getAvatarURL(params.customExpensifyAvatarID), name: params.customExpensifyAvatarID, customExpensifyAvatarID: params.customExpensifyAvatarID},
+                    {
+                        uri,
+                        name: customExpensifyAvatarID,
+                        customExpensifyAvatarID,
+                    },
                     {
                         avatar: currentUserPersonalDetails?.avatar,
                         avatarThumbnail: currentUserPersonalDetails?.avatarThumbnail,
