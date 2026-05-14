@@ -94,6 +94,54 @@ describe('createAgent', () => {
         });
     });
 
+    it('passes customExpensifyAvatarID to write params when provided', () => {
+        createAgent('Bot', 'My prompt', 'bot-avatar--blue');
+
+        expect(mockWrite).toHaveBeenCalledWith(WRITE_COMMANDS.CREATE_AGENT, {firstName: 'Bot', prompt: 'My prompt', customExpensifyAvatarID: 'bot-avatar--blue'}, expect.any(Object));
+    });
+
+    it('includes resolved avatar URI in optimistic and failure personal detail data for a preset ID', () => {
+        createAgent('Bot', 'My prompt', 'bot-avatar--blue');
+
+        const {optimisticData, failureData} = getWriteOptions();
+        const accountID = getOptimisticAccountID(optimisticData);
+
+        const optimisticEntry = (optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST)?.value as Record<string, unknown>)?.[accountID] as Record<string, unknown>;
+        expect(optimisticEntry.avatar).toBeTruthy();
+        expect(optimisticEntry.avatarThumbnail).toBeTruthy();
+
+        const failureEntry = (failureData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST)?.value as Record<string, unknown>)?.[accountID] as Record<string, unknown>;
+        expect(failureEntry.avatar).toBeTruthy();
+        expect(failureEntry.avatarThumbnail).toBeTruthy();
+    });
+
+    it('includes optimisticAvatarURI in optimistic and failure personal detail data for a custom file URI', () => {
+        const fileURI = 'file://local-photo.jpg';
+        createAgent('Bot', 'My prompt', undefined, fileURI);
+
+        const {optimisticData, failureData} = getWriteOptions();
+        const accountID = getOptimisticAccountID(optimisticData);
+
+        const optimisticEntry = (optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST)?.value as Record<string, unknown>)?.[accountID] as Record<string, unknown>;
+        expect(optimisticEntry.avatar).toBe(fileURI);
+        expect(optimisticEntry.avatarThumbnail).toBe(fileURI);
+
+        const failureEntry = (failureData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST)?.value as Record<string, unknown>)?.[accountID] as Record<string, unknown>;
+        expect(failureEntry.avatar).toBe(fileURI);
+        expect(failureEntry.avatarThumbnail).toBe(fileURI);
+    });
+
+    it('does not include avatar fields in optimistic data when no avatar args are given', () => {
+        createAgent('Bot', 'My prompt');
+
+        const {optimisticData} = getWriteOptions();
+        const accountID = getOptimisticAccountID(optimisticData);
+
+        const entry = (optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST)?.value as Record<string, unknown>)?.[accountID] as Record<string, unknown>;
+        expect(entry.avatar).toBeUndefined();
+        expect(entry.avatarThumbnail).toBeUndefined();
+    });
+
     it('does not merge ADD_AGENT_FORM (navigation handles UX after submit)', () => {
         createAgent('Bot', 'My prompt');
 
