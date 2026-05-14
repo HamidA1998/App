@@ -80,7 +80,6 @@ function ProfilePage() {
     const [vacationDelegate] = useOnyx(ONYXKEYS.NVP_PRIVATE_VACATION_DELEGATE);
     const {isActingAsDelegate} = useDelegateNoAccessState();
     const {showDelegateNoAccessModal} = useDelegateNoAccessActions();
-    const isAgentAccount = useIsAgentAccount();
     const publicOptions: Array<{
         description: string;
         title: string;
