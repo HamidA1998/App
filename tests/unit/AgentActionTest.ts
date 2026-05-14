@@ -413,6 +413,7 @@ describe('updateAgentAvatar (file upload)', () => {
 
 describe('updateAgentAvatar (bot avatar)', () => {
     const BOT_AVATAR_ID = 'bot_avatar_1';
+    const BOT_AVATAR_URI = 'https://cdn.example.com/bot_avatar_1.png';
     const currentAvatar = 'https://cdn.example.com/old.jpg';
 
     beforeEach(() => {
@@ -420,25 +421,25 @@ describe('updateAgentAvatar (bot avatar)', () => {
     });
 
     it('calls write with UPDATE_AGENT_AVATAR command and customExpensifyAvatarID param', () => {
-        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID, uri: BOT_AVATAR_URI}, currentAvatar);
 
         expect(mockWrite).toHaveBeenCalledWith(WRITE_COMMANDS.UPDATE_AGENT_AVATAR, {agentAccountID: TEST_ACCOUNT_ID, customExpensifyAvatarID: BOT_AVATAR_ID}, expect.any(Object));
     });
 
-    it('optimistic data does not set avatar URI for bot avatar', () => {
-        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+    it('optimistic data sets avatar URI for bot avatar', () => {
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID, uri: BOT_AVATAR_URI}, currentAvatar);
 
         const {optimisticData} = getWriteOptions();
         const personalDetailUpdate = optimisticData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);
         const value = (personalDetailUpdate?.value as Record<string, unknown>)[TEST_ACCOUNT_ID] as Record<string, unknown>;
 
-        expect(value.avatar).toBeUndefined();
-        expect(value.avatarThumbnail).toBeUndefined();
+        expect(value.avatar).toBe(BOT_AVATAR_URI);
+        expect(value.avatarThumbnail).toBe(BOT_AVATAR_URI);
         expect((value.pendingFields as Record<string, unknown>).avatar).toBe(CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE);
     });
 
     it('failure data reverts avatar and sets avatarErrors', () => {
-        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID}, currentAvatar);
+        updateAgentAvatar(TEST_ACCOUNT_ID, {customExpensifyAvatarID: BOT_AVATAR_ID, uri: BOT_AVATAR_URI}, currentAvatar);
 
         const {failureData} = getWriteOptions();
         const personalDetailUpdate = failureData.find((u) => u.key === ONYXKEYS.PERSONAL_DETAILS_LIST);

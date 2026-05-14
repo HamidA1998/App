@@ -170,7 +170,7 @@ function clearAgentAvatarUpdateError(accountID: number) {
 
 function updateAgentAvatar(
     accountID: number,
-    update: {customExpensifyAvatarID: string} | {file: File | CustomRNImageManipulatorResult; uri: string},
+    update: {customExpensifyAvatarID: string; uri: string} | {file: File | CustomRNImageManipulatorResult; uri: string},
     currentAvatar: AvatarSource | undefined,
 ) {
     const isCustomExpensifyAvatar = 'customExpensifyAvatarID' in update;
@@ -181,10 +181,8 @@ function updateAgentAvatar(
             key: ONYXKEYS.PERSONAL_DETAILS_LIST,
             value: {
                 [accountID]: {
-                    ...(!isCustomExpensifyAvatar && {
-                        avatar: update.uri,
-                        avatarThumbnail: update.uri,
-                    }),
+                    avatar: update.uri,
+                    avatarThumbnail: update.uri,
                     pendingFields: {avatar: CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE},
                     errorFields: {avatar: null},
                 },

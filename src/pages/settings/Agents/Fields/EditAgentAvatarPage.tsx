@@ -18,6 +18,7 @@ import {useMemoizedLazyExpensifyIcons} from '@hooks/useLazyAsset';
 import useLocalize from '@hooks/useLocalize';
 import useOnyx from '@hooks/useOnyx';
 import useThemeStyles from '@hooks/useThemeStyles';
+import {getAvatarURL, isPresetAvatarID} from '@libs/Avatars/PresetAvatarCatalog';
 import {validateAvatarImage} from '@libs/AvatarUtils';
 import type {CustomRNImageManipulatorResult} from '@libs/cropOrRotateImage/types';
 import Navigation from '@libs/Navigation/Navigation';
@@ -129,11 +130,12 @@ function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAva
         if (selectedBotAvatar) {
             const customExpensifyAvatarID = botAvatarIDs.get(selectedBotAvatar);
             if (customExpensifyAvatarID) {
+                const uri = isPresetAvatarID(customExpensifyAvatarID) ? (getAvatarURL(customExpensifyAvatarID) ?? customExpensifyAvatarID) : customExpensifyAvatarID;
                 if (onSave) {
                     onSave({customExpensifyAvatarID});
                     return;
                 }
-                updateAgentAvatar(accountID, {customExpensifyAvatarID}, personalDetails?.avatar);
+                updateAgentAvatar(accountID, {customExpensifyAvatarID, uri}, personalDetails?.avatar);
                 Navigation.goBack(fallbackRoute);
             }
         }
