@@ -1,15 +1,16 @@
 import React, {useCallback, useEffect} from 'react';
 import Navigation from '@libs/Navigation/Navigation';
+import {consumeNavigationToken, getInitialPresetID, setPendingAvatar} from '@pages/settings/Agents/pendingAgentAvatarStore';
 import ROUTES from '@src/ROUTES';
-import {consumeNavigationToken, getInitialPresetID, setPendingAvatar} from '../pendingAgentAvatarStore';
 import type {OnSaveParams} from './EditAgentAvatarPage';
 import {EditAgentAvatarContent} from './EditAgentAvatarPage';
 
 function AddAgentAvatarPage() {
     useEffect(() => {
-        if (!consumeNavigationToken()) {
-            Navigation.navigate(ROUTES.SETTINGS_AGENTS_ADD);
+        if (consumeNavigationToken()) {
+            return;
         }
+        Navigation.navigate(ROUTES.SETTINGS_AGENTS_ADD);
     }, []);
 
     const initialPresetID = getInitialPresetID();

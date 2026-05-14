@@ -18,11 +18,12 @@ function openAgentsPage() {
 function createAgent(firstName: string | undefined, prompt: string, customExpensifyAvatarID?: string, optimisticAvatarURI?: string) {
     const optimisticAccountID = -Math.round(Math.random() * 1000000);
 
-    const avatarURI = customExpensifyAvatarID
-        ? isPresetAvatarID(customExpensifyAvatarID)
-            ? (getAvatarURL(customExpensifyAvatarID) ?? customExpensifyAvatarID)
-            : customExpensifyAvatarID
-        : optimisticAvatarURI;
+    let avatarURI: string | undefined;
+    if (customExpensifyAvatarID) {
+        avatarURI = isPresetAvatarID(customExpensifyAvatarID) ? (getAvatarURL(customExpensifyAvatarID) ?? customExpensifyAvatarID) : customExpensifyAvatarID;
+    } else {
+        avatarURI = optimisticAvatarURI;
+    }
 
     const optimisticData: AnyOnyxUpdate[] = [
         {
