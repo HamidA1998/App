@@ -17,7 +17,6 @@ import useDiscardChangesConfirmation from '@hooks/useDiscardChangesConfirmation'
 import {useMemoizedLazyExpensifyIcons} from '@hooks/useLazyAsset';
 import useLocalize from '@hooks/useLocalize';
 import useOnyx from '@hooks/useOnyx';
-import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
 import {validateAvatarImage} from '@libs/AvatarUtils';
 import type {CustomRNImageManipulatorResult} from '@libs/cropOrRotateImage/types';
@@ -56,7 +55,6 @@ type EditAgentAvatarContentProps = {
 function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAvatarContentProps) {
     const {translate} = useLocalize();
     const styles = useThemeStyles();
-    const theme = useTheme();
     const icons = useMemoizedLazyExpensifyIcons(['Upload']);
 
     const [personalDetails] = useOnyx(ONYXKEYS.PERSONAL_DETAILS_LIST, {selector: (list) => list?.[accountID]});
@@ -201,7 +199,7 @@ function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAva
                                         setSelectedBotAvatar(() => botAvatar);
                                         setImageData(EMPTY_IMAGE_DATA);
                                     }}
-                                    style={[styles.avatarSelectorWrapper, isSelected && {borderColor: theme.success, borderWidth: 2}]}
+                                    style={[styles.avatarSelectorWrapper, isSelected && styles.avatarSelected]}
                                 >
                                     <Avatar
                                         type={CONST.ICON_TYPE_AVATAR}
