@@ -2754,7 +2754,7 @@ ${amount} für ${merchant} – ${date}`,
         agentName: 'Name der Ansprechperson',
         instructions: 'Eigene Anweisungen schreiben',
         createAgent: 'Agent erstellen',
-        switchAvatar: 'Profilbild wechseln',
+        editAvatar: 'Profilbild wechseln',
         defaultAgentName: (displayName: string) => `Agent*in von ${displayName}`,
         defaultPrompt:
             'Lehne Ausgaben ab, die für Glücksspiele, Kinobesuche oder andere offensichtlich nicht geschäftliche Zwecke sind.\n\nErinnere den:die Nutzer:in daran, immer ein Belegfoto beizufügen, auf dem das Trinkgeld klar erkennbar ist.\n\nGenehmige den Bericht, wenn er früheren Berichten derselben Person sehr ähnlich ist.\n\nLehne Berichte mit mehr als 500 $ an Reisekosten ab.',

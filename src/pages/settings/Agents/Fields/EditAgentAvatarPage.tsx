@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
 import AttachmentPicker from '@components/AttachmentPicker';
 import Avatar from '@components/Avatar';
@@ -51,23 +51,31 @@ type EditAgentAvatarContentProps = {
     accountID: number;
     fallbackRoute?: Route;
     onSave?: (params: OnSaveParams) => void;
+    initialPresetID?: string;
 };
 
-function EditAgentAvatarContent({accountID, fallbackRoute, onSave}: EditAgentAvatarContentProps) {
+function EditAgentAvatarContent({accountID, fallbackRoute, onSave, initialPresetID}: EditAgentAvatarContentProps) {
     const {translate} = useLocalize();
     const styles = useThemeStyles();
     const icons = useMemoizedLazyExpensifyIcons(['Upload']);
 
     const [personalDetails] = useOnyx(ONYXKEYS.PERSONAL_DETAILS_LIST, {selector: (list) => list?.[accountID]});
 
-    const [selectedBotAvatar, setSelectedBotAvatar] = useState<BotAvatar | null>(null);
+    const initialBotAvatar = useMemo(() => {
+        if (!initialPresetID) {
+            return null;
+        }
+        return botAvatars.find((av) => botAvatarIDs.get(av) === initialPresetID) ?? null;
+    }, [initialPresetID]);
+
+    const [selectedBotAvatar, setSelectedBotAvatar] = useState<BotAvatar | null>(() => initialBotAvatar);
     const [imageData, setImageData] = useState<ImageData>(EMPTY_IMAGE_DATA);
     const [cropImageData, setCropImageData] = useState<ImageData>(EMPTY_IMAGE_DATA);
     const [isAvatarCropModalOpen, setIsAvatarCropModalOpen] = useState(false);
     const [errorData, setErrorData] = useState<{validationError: TranslationPaths | null; phraseParam: Record<string, unknown>}>({validationError: null, phraseParam: {}});
 
     const isSavingRef = useRef(false);
-    const isDirty = selectedBotAvatar !== null || imageData.uri !== '';
+    const isDirty = selectedBotAvatar !== initialBotAvatar || imageData.uri !== '';
 
     useDiscardChangesConfirmation({
         getHasUnsavedChanges: () => !isSavingRef.current && isDirty,

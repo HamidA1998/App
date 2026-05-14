@@ -2760,7 +2760,7 @@ ${amount} pour ${merchant} - ${date}`,
         agentName: 'Nom de l’agent',
         instructions: 'Rédiger des instructions personnalisées',
         createAgent: 'Créer un agent',
-        switchAvatar: "Changer d'avatar",
+        editAvatar: "Changer d'avatar",
         defaultAgentName: (displayName: string) => `Agent de ${displayName}`,
         defaultPrompt:
             'Rejeter les dépenses liées aux jeux d’argent, aux films ou à d’autres motifs manifestement non professionnels.\n\nRappeler à l’utilisateur d’inclure systématiquement une image du reçu où le pourboire est clairement visible.\n\nApprouver le rapport s’il est très similaire aux rapports précédents du même utilisateur.\n\nRejeter les rapports contenant plus de 500 $ de frais de déplacement.',

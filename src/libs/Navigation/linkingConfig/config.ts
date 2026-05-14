@@ -382,6 +382,10 @@ const config: LinkingOptions<RootNavigatorParamList>['config'] = {
                             path: ROUTES.SETTINGS_AGENTS_ADD,
                             exact: true,
                         },
+                        [SCREENS.SETTINGS.AGENTS.ADD_AVATAR]: {
+                            path: ROUTES.SETTINGS_AGENTS_ADD_AVATAR,
+                            exact: true,
+                        },
                         [SCREENS.SETTINGS.AGENTS.EDIT]: {
                             path: ROUTES.SETTINGS_AGENTS_EDIT.route,
                             parse: {

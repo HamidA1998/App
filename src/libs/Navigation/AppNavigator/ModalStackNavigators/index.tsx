@@ -478,6 +478,7 @@ const SettingsModalStackNavigator = createModalStackNavigator<SettingsNavigatorP
     [SCREENS.SETTINGS.BANK_ACCOUNT_PURPOSE]: () => require<ReactComponentModule>('../../../../pages/settings/Wallet/BankAccountPurposePage').default,
     [SCREENS.SETTINGS.RULES.ROOT]: () => require<ReactComponentModule>('../../../../pages/settings/Rules/ExpenseRulesPage').default,
     [SCREENS.SETTINGS.AGENTS.ADD]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/AddAgentPage').default,
+    [SCREENS.SETTINGS.AGENTS.ADD_AVATAR]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/AddAgentAvatarPage').default,
     [SCREENS.SETTINGS.AGENTS.EDIT]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/EditAgentPage').default,
     [SCREENS.SETTINGS.AGENTS.EDIT_NAME]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/EditNamePage').default,
     [SCREENS.SETTINGS.AGENTS.EDIT_PROMPT]: () => require<ReactComponentModule>('../../../../pages/settings/Agents/Fields/EditPromptPage').default,

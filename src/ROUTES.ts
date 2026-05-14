@@ -1061,6 +1061,7 @@ const ROUTES = {
     SETTINGS_WALLET_TRAVEL_CVV_VERIFY_ACCOUNT: `settings/wallet/travel-cvv/${VERIFY_ACCOUNT}`,
     SETTINGS_AGENTS: 'settings/agents',
     SETTINGS_AGENTS_ADD: 'settings/agents/new',
+    SETTINGS_AGENTS_ADD_AVATAR: 'settings/agents/new/avatar',
     SETTINGS_AGENTS_EDIT: {
         route: 'settings/agents/:accountID/edit',
         getRoute: (accountID: number) => `settings/agents/${accountID}/edit` as const,

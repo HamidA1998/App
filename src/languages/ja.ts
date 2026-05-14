@@ -2722,7 +2722,7 @@ ${date} の ${merchant} への ${amount}`,
         agentName: 'エージェント名',
         instructions: 'カスタム指示を作成',
         createAgent: 'エージェントを作成',
-        switchAvatar: 'アバターを切り替え',
+        editAvatar: 'アバターを切り替え',
         defaultAgentName: (displayName: string) => `${displayName} さんの代理人`,
         defaultPrompt:
             'ギャンブル、映画、またはその他明らかにビジネス目的ではない理由による経費は却下します。\n\nチップの金額が明確にわかるレシート画像を必ず添付するよう、ユーザーにリマインドします。\n\n同じユーザーの過去のレポートと非常によく似ている場合は、そのレポートを承認します。\n\n出張費が500ドルを超えるレポートは却下します。',

@@ -1,0 +1,38 @@
+import React, {useCallback, useEffect} from 'react';
+import Navigation from '@libs/Navigation/Navigation';
+import ROUTES from '@src/ROUTES';
+import {consumeNavigationToken, getInitialPresetID, setPendingAvatar} from '../pendingAgentAvatarStore';
+import type {OnSaveParams} from './EditAgentAvatarPage';
+import {EditAgentAvatarContent} from './EditAgentAvatarPage';
+
+function AddAgentAvatarPage() {
+    useEffect(() => {
+        if (!consumeNavigationToken()) {
+            Navigation.navigate(ROUTES.SETTINGS_AGENTS_ADD);
+        }
+    }, []);
+
+    const initialPresetID = getInitialPresetID();
+
+    const handleSave = useCallback((params: OnSaveParams) => {
+        if ('customExpensifyAvatarID' in params) {
+            setPendingAvatar({type: 'preset', id: params.customExpensifyAvatarID});
+        } else {
+            setPendingAvatar({type: 'file', file: params.file, uri: params.uri});
+        }
+        Navigation.goBack(ROUTES.SETTINGS_AGENTS_ADD);
+    }, []);
+
+    return (
+        <EditAgentAvatarContent
+            accountID={0}
+            fallbackRoute={ROUTES.SETTINGS_AGENTS_ADD}
+            onSave={handleSave}
+            initialPresetID={initialPresetID}
+        />
+    );
+}
+
+AddAgentAvatarPage.displayName = 'AddAgentAvatarPage';
+
+export default AddAgentAvatarPage;
