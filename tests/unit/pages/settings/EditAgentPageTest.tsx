@@ -38,7 +38,8 @@ jest.mock('@hooks/useStyleUtils', () =>
                 {
                     get: (_, prop) => {
                         if (prop === 'parseStyleFromFunction') {
-                            return (style: unknown) => (typeof style === 'function' ? style({pressed: false, focused: false, hovered: false}) : style);
+                            return (style: unknown) =>
+                                typeof style === 'function' ? (style as (state: Record<string, boolean>) => unknown)({pressed: false, focused: false, hovered: false}) : style;
                         }
                         return jest.fn(() => ({}));
                     },
