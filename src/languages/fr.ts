@@ -2752,7 +2752,7 @@ ${amount} pour ${merchant} - ${date}`,
             genericUpdate: 'Un problème est survenu lors de la mise à jour de cet agent',
             updateName: 'Un problème est survenu lors de la mise à jour du nom de cet agent',
             updatePrompt: 'Un problème est survenu lors de la mise à jour des instructions de cet agent',
-            updateAvatar: 'Un problème est survenu lors de la mise à jour de l\'avatar de cet agent',
+            updateAvatar: "Un problème est survenu lors de la mise à jour de l'avatar de cet agent",
         },
     },
     addAgentPage: {
