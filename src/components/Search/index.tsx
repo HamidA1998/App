@@ -704,6 +704,10 @@ function Search({
             return;
         }
 
+        if (hasErrors) {
+            return;
+        }
+
         if (searchResults?.search?.isLoading) {
             if (validGroupBy || (shouldCalculateTotals && searchResults?.search?.count === undefined)) {
                 shouldRetrySearchWithTotalsOrGroupedRef.current = true;
@@ -722,10 +726,10 @@ function Search({
 
         // We don't need to run the effect on change of isFocused.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [handleSearch, isOffline, offset, queryJSON, currentSearchKey, shouldCalculateTotals, validGroupBy]);
+    }, [currentSearchKey, handleSearch, hasErrors, isOffline, offset, queryJSON, shouldCalculateTotals, validGroupBy]);
 
     useEffect(() => {
-        if (!shouldRetrySearchWithTotalsOrGroupedRef.current || searchResults?.search?.isLoading || (!shouldCalculateTotals && !validGroupBy)) {
+        if (!shouldRetrySearchWithTotalsOrGroupedRef.current || hasErrors || searchResults?.search?.isLoading || (!shouldCalculateTotals && !validGroupBy)) {
             return;
         }
 
@@ -745,7 +749,18 @@ function Search({
             prevReportsLength: filteredDataLength,
             isLoading: false,
         });
-    }, [filteredDataLength, handleSearch, offset, queryJSON, currentSearchKey, searchResults?.search?.count, searchResults?.search?.isLoading, shouldCalculateTotals, validGroupBy]);
+    }, [
+        currentSearchKey,
+        filteredDataLength,
+        handleSearch,
+        hasErrors,
+        offset,
+        queryJSON,
+        searchResults?.search?.count,
+        searchResults?.search?.isLoading,
+        shouldCalculateTotals,
+        validGroupBy,
+    ]);
 
     // When new data load, selectedTransactions is updated in next effect. We use this flag to whether selection is updated
     const isRefreshingSelection = useRef(false);

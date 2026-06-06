@@ -16,11 +16,15 @@ import navigationRef from '@libs/Navigation/navigationRef';
 import createPlatformStackNavigator from '@libs/Navigation/PlatformStackNavigation/createPlatformStackNavigator';
 import Animations from '@libs/Navigation/PlatformStackNavigation/navigationOptions/animation';
 import type {SearchFullscreenNavigatorParamList} from '@libs/Navigation/types';
+import {buildSearchQueryJSON, buildSearchQueryString} from '@libs/SearchQueryUtils';
 import * as SearchQueryUtils from '@libs/SearchQueryUtils';
 import SearchPage from '@pages/Search/SearchPage';
+import CONST from '@src/CONST';
 import NAVIGATORS from '@src/NAVIGATORS';
 import ONYXKEYS from '@src/ONYXKEYS';
 import SCREENS from '@src/SCREENS';
+
+const mockSearch = jest.fn(() => Promise.resolve(CONST.JSON_CODE.INVALID_SEARCH_QUERY));
 
 jest.mock('@hooks/useResponsiveLayout', () => jest.fn());
 
@@ -33,6 +37,42 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual<typeof reactNavigationNativeImport>('@react-navigation/native'),
     useNavigationState: () => {},
 }));
+
+jest.mock('@expensify/react-native-hybrid-app', () => ({
+    __esModule: true,
+    default: {
+        isHybridApp: jest.fn(() => false),
+        shouldUseStaging: jest.fn(),
+        closeReactNativeApp: jest.fn(),
+        completeOnboarding: jest.fn(),
+        switchAccount: jest.fn(),
+        sendAuthToken: jest.fn(),
+        getHybridAppSettings: jest.fn(() => ({})),
+        getInitialURL: jest.fn(),
+        onURLListenerAdded: jest.fn(),
+        signInToOldDot: jest.fn(),
+        signOutFromOldDot: jest.fn(),
+        startSignOut: jest.fn(),
+        cancelSignOut: jest.fn(),
+        clearOldDotAfterSignOut: jest.fn(),
+    },
+}));
+
+jest.mock('@libs/actions/Search', () => {
+    const actual = jest.requireActual('@libs/actions/Search');
+    return {
+        ...actual,
+        search: (...args: Parameters<typeof actual.search>) => mockSearch(...args),
+    };
+});
+
+jest.mock('@userActions/Search', () => {
+    const actual = jest.requireActual('@userActions/Search');
+    return {
+        ...actual,
+        search: (...args: Parameters<typeof actual.search>) => mockSearch(...args),
+    };
+});
 
 type TestNavigationContainerProps = {initialState: reactNavigationNativeImport.InitialState};
 
@@ -72,7 +112,7 @@ function TestNavigationContainer({initialState}: TestNavigationContainerProps) {
     );
 }
 
-const renderPage = () => {
+const renderPage = (query = buildSearchQueryString()) => {
     return render(
         <ComposeProviders components={[OnyxListItemProvider, LocaleContextProvider, PlaybackContextProvider, FullScreenBlockingViewContextProvider]}>
             <PortalProvider>
@@ -88,6 +128,7 @@ const renderPage = () => {
                                         routes: [
                                             {
                                                 name: SCREENS.SEARCH.ROOT,
+                                                params: {q: query},
                                             },
                                         ],
                                     },
@@ -121,6 +162,7 @@ describe('SearchPageNarrow', () => {
         await act(async () => {
             await Onyx.clear();
         });
+        mockSearch.mockClear();
         jest.clearAllMocks();
     });
 
@@ -135,5 +177,33 @@ describe('SearchPageNarrow', () => {
 
         const searchAutocompleteInput = screen.getByTestId('search-autocomplete-text-input', {includeHiddenElements: true});
         expect(searchAutocompleteInput).toBeTruthy();
+    });
+
+    it('does not auto-retry an errored search on mount', async () => {
+        const invalidQuery = 'type:chat category:abcd';
+        const queryJSON = buildSearchQueryJSON(invalidQuery);
+
+        expect(queryJSON).toBeTruthy();
+
+        await act(async () => {
+            await Onyx.merge(`${ONYXKEYS.COLLECTION.SNAPSHOT}${queryJSON?.hash}`, {
+                search: {
+                    isLoading: false,
+                    type: CONST.SEARCH.DATA_TYPES.CHAT,
+                },
+                errors: {
+                    query: 'common.genericErrorMessage',
+                },
+            });
+        });
+
+        renderPage(invalidQuery);
+
+        await act(async () => {
+            jest.advanceTimersByTime(0);
+        });
+
+        expect(screen.getByTestId('SearchPageNarrow')).toBeTruthy();
+        expect(mockSearch).not.toHaveBeenCalled();
     });
 });
